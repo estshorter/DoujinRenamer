@@ -9,3 +9,17 @@ You must obtain [DMM-api-id](https://affiliate.dmm.com/) and DMM-affiliate-id, a
     "affiliate_id": "AFFILIATE_ID"
 }
 ```
+
+## How to use
+```
+DoujinRenamer.exe [DIR_CONTAINING_TARGET_FILES]
+```
+
+```
+> DoujinRenamer.exe -h
+Usage of DoujinRenamer.exe:
+  -e    Execute renaming
+  -r    Visit files recursively
+  -s string
+        Path to settings.json (default "settings.json")
+```
