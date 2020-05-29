@@ -42,8 +42,10 @@ func exists(filename string) bool {
 }
 
 func walkNonRecursive(root string, walkFn filepath.WalkFunc) error {
-	fInfo, _ := os.Stat(root)
-	if fInfo.IsDir() {
+	fInfo, err := os.Stat(root)
+	if err != nil {
+		return err
+	} else if fInfo.IsDir() {
 		root = filepath.Join(root, "*")
 	}
 
