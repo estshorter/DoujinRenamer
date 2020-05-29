@@ -156,6 +156,7 @@ func scrapeFanza(path, contentID string, enableRename bool) (*Work, error) {
 	}
 	return &Work{result[0][1], result[0][2]}, nil
 }
+
 func generateRequestURL(contentID string, fanzaAPIInfo *FanzaAPIInfo) string {
 	b := &strings.Builder{}
 	b.WriteString("https://api.dmm.com/affiliate/v3/ItemList?api_id=")
