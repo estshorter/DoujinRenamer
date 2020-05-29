@@ -19,7 +19,7 @@ DoujinRenamer.exe [DIR_CONTAINING_TARGET_FILES]
 > DoujinRenamer.exe -h
 Usage of DoujinRenamer.exe:
   -e    Execute renaming
-  -r    Visit files recursively
+  -r    Visit directories recursively
   -s string
         Path to settings.json (default "settings.json")
 ```
