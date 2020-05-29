@@ -182,7 +182,7 @@ func main() {
 	var enableRecursive bool
 	var enableRename bool
 	var fanzaAPIInfoPath string
-	flag.BoolVar(&enableRecursive, "r", false, "Visit files recursively")
+	flag.BoolVar(&enableRecursive, "r", false, "Visit directories recursively")
 	flag.StringVar(&fanzaAPIInfoPath, "s", "settings.json", "Path to settings.json")
 	flag.BoolVar(&enableRename, "e", false, "Execute renaming")
 	flag.Parse()
