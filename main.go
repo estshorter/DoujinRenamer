@@ -13,10 +13,12 @@ import (
 	"os/user"
 	"path/filepath"
 	"regexp"
+	"runtime"
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/koron/go-dproxy"
+	"golang.org/x/sys/windows/registry"
 )
 
 var re = regexp.MustCompile(`(.*)\((.*)\) - FANZA同人`)
@@ -198,11 +200,24 @@ func main() {
 	flag.StringVar(&fanzaAPIInfoPath, "s", "settings.json", "Path to settings.json")
 	flag.BoolVar(&enableRename, "e", false, "Execute renaming")
 	flag.Parse()
-	args := flag.Args()
+	targetDirs := flag.Args()
 
-	if len(args) == 0 {
+	if len(targetDirs) == 0 {
 		usr, _ := user.Current()
-		args = []string{usr.HomeDir + "/Downloads"}
+		if runtime.GOOS == "windows" {
+			k, err := registry.OpenKey(registry.CURRENT_USER, `SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders`, registry.QUERY_VALUE)
+			if err != nil {
+				log.Fatal(err)
+			}
+			defer k.Close()
+			s, _, err := k.GetStringValue("{374DE290-123F-4565-9164-39C4925E467B}")
+			if err != nil {
+				log.Fatal(err)
+			}
+			targetDirs = []string{s}
+		} else {
+			targetDirs = []string{usr.HomeDir + "/Downloads"}
+		}
 	}
 
 	fanzaAPIInfo, err := readFanzaAPIInfo(fanzaAPIInfoPath)
@@ -219,7 +234,8 @@ func main() {
 		return getWorkInfo(path, info, err, fanzaAPIInfo, enableRename)
 	}
 
-	for _, fileOrDir := range args {
+	fmt.Printf("Target directories: %v\n", targetDirs)
+	for _, fileOrDir := range targetDirs {
 		fileOrDir := filepath.Clean(fileOrDir)
 		if !exists(fileOrDir) {
 			fmt.Printf("%v does not exist\n", fileOrDir)
