@@ -10,6 +10,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"os/user"
 	"path/filepath"
 	"regexp"
 	"strings"
@@ -128,7 +129,15 @@ func getWorkInfoFromFanza(path, contentID string, fanzaAPIInfo *FanzaAPIInfo, en
 }
 
 func loadHTMLFromWeb(url string) (io.Reader, error) {
-	resp, err := http.Get(url)
+	// for DMM
+	cookie := &http.Cookie{
+		Name:  "age_check_done",
+		Value: "1",
+	}
+	req, _ := http.NewRequest("GET", url, nil)
+	req.AddCookie(cookie)
+	client := new(http.Client)
+	resp, err := client.Do(req)
 	if err != nil {
 		return nil, err
 	}
@@ -190,6 +199,11 @@ func main() {
 	flag.BoolVar(&enableRename, "e", false, "Execute renaming")
 	flag.Parse()
 	args := flag.Args()
+
+	if len(args) == 0 {
+		usr, _ := user.Current()
+		args = []string{usr.HomeDir + "/Downloads"}
+	}
 
 	fanzaAPIInfo, err := readFanzaAPIInfo(fanzaAPIInfoPath)
 	if err != nil {
